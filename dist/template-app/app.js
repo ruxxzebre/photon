@@ -1,7 +1,17 @@
 // {app}            Module to control application life.
 // {BrowserWindow}  Module to create native browser window.
 const {app, BrowserWindow} = require('electron')
+const path = require('path');
+const env = process.env.NODE_ENV || 'development';
 
+if (env === 'development') {
+  try {
+      require('electron-reloader')(module, {
+          debug: true,
+          watchRenderer: true
+      });
+  } catch (_) { console.log('Error'); }    
+}
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 var mainWindow = null;
@@ -30,7 +40,7 @@ app.on('ready', function() {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/index.html');
+  mainWindow.loadURL('file://' + path.join(__dirname, '/src', '/index.html'));
 
   // Open the DevTools.
   //mainWindow.openDevTools();

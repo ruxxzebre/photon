@@ -5,6 +5,14 @@
   "main": "app.js",
   "author": "Connor Sears",
   "scripts": {
-    "start": "electron ."
+    "start": "NODE_ENV=development && electron .",
+    "helpa": "electron -help"
+  },
+  "dependencies": {
+    "electron": "^19.0.3"
+  },
+  "devDependencies": {
+    "electron-reload": "^2.0.0-alpha.1",
+    "electron-reloader": "^1.2.3"
   }
 }
