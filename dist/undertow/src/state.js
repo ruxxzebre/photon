@@ -118,12 +118,14 @@ export const getCurrentNote = () => {
   return state.notesMap[state.currentEditorNoteID];
 };
 
-export const openNote = (id) => {
+export const openNote = (id, opts = { replace: true }) => {
   if (!state.openedNoteIDs.includes(id)) {
     state.openedNoteIDs.push(id);
   }
+
   state.currentEditorNoteID = id;
-  router.replace("/editor/" + id);
+  if (opts.replace)
+    router.replace("/editor/" + id);
 };
 
 export const openLatestNote = () => {
@@ -167,7 +169,11 @@ export default {
    */
   install: (app, _options) => {
     app.config.globalProperties.$state = state;
-    openNote(createNote());
-    initModals();
+    if (!Object.keys(state.notesMap).length) {
+      openNote(createNote(), {
+        replace: false,
+      });
+      initModals();
+    }
   },
 };
