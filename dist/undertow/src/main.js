@@ -7,10 +7,12 @@ import '@kangc/v-md-editor/lib/theme/style/github.css';
 import hljs from 'highlight.js';
 import enUS from '@kangc/v-md-editor/lib/lang/en-US';
 
+import statePlug from "./state";
 import { router } from "./router";
 import App from "./App.vue";
 
 function init(app) {
+	app.use(statePlug);	
 	VMdEditor.use(githubTheme, {
 		Hljs: hljs,
 	});

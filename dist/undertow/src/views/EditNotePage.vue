@@ -1,8 +1,11 @@
 <script setup>
+import { getCurrentInstance } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import {
   isAnyNoteOpened,
   createNote,
   getCurrentNote,
+  isClosingAvailable,
   openNote,
 	closeNote,
   state,
@@ -15,28 +18,55 @@ function newNote() {
   openNote(id);
 }
 
-function editNoteName() {
-
+function isCloseButton(e) {
+  return e.target.classList.contains('icon-close-tab');
 }
 
-if (!state.currentEditorNoteID) {
-  openLatestNote()();
+function handleTabClick(e, id) {
+  if (isCloseButton(e)) {
+    closeNote(id);
+  } else if (e.detail == 1) {
+		openNote(id);
+	} else {
+    console.log(id);
+    console.log(getNote(id));
+		state.modals.editNote.open({
+      noteID: id,
+    });
+	}
+} 
+
+const route = useRoute();
+
+if (route.params.id) {
+  openNote(route.params.id);
+// } else if (state.currentEditorNoteID) {
+} else {
+  openLatestNote();
 }
+// console.log(route.params.id, state.notesMap, getNote(route.params.id));
 
 </script>
 
 <template>
-  <div class="pane">
+  <div
+    v-if="!!Object.keys($state.notesMap).length"
+    class="pane"
+  >
     <div class="tab-group">
       <div
         v-for="item in state.openedNoteIDs"
         :key="item"
         class="tab-item"
         :class="{ active: item == state.currentEditorNoteID }"
-        @click="openNote(item)"
+        @click="handleTabClick($event, item)"
       >
-        <span class="icon icon-cancel icon-close-tab" @click="closeNote(item)" />
-				{{ getNote(item).name }}
+        <span
+          v-if="isClosingAvailable(item)"
+          class="icon icon-cancel icon-close-tab"
+          @click="closeNote(item)"
+        />
+        {{ getNote(item)?.name }}
       </div>
       <div
         class="tab-item tab-item-fixed"
@@ -46,7 +76,9 @@ if (!state.currentEditorNoteID) {
       </div>
     </div>
     <span v-if="state.currentEditorNoteID">
+      Note ID: {{ route.params.id }}
       <v-md-editor
+        @save="() => state.notesMap[route.params.id].save()"
         :key="state.currentEditorNoteID" 
         v-model="state.notesMap[state.currentEditorNoteID].text"
         height="100%"

@@ -2,6 +2,7 @@
 // import HelloWorld from './components/HelloWorld.vue'
 // import TestThing from "./components/TestThing.vue";
 import LeftBar from './components/LeftBar.vue';
+import EditNoteModal from './components/modals/EditNoteModal.vue';
 // import { computed, ref } from 'vue'
 
 // const count = ref(0)
@@ -12,6 +13,7 @@ import LeftBar from './components/LeftBar.vue';
   <div class="window">
     <div class="window-content">
       <div class="pane-group">
+        <edit-note-modal />
         <left-bar />
         <router-view></router-view>
       </div>
